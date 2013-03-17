@@ -279,140 +279,146 @@ void Keyboard_::sendReport(KeyReport* keys)
 }
 
 extern
-const uint8_t _asciimap[128] PROGMEM;
+const uint8_t _asciimap[256] PROGMEM;
 
-#define SHIFT 0x80
-const uint8_t _asciimap[128] =
+//#define SHIFT 0x80
+
+//#define CTRL		0x80
+#define SHIFT		0x80
+//#define ALT  		0x82
+#define GUI			0x83
+
+const uint8_t _asciimap[256] =
 {
-	0x00,             // NUL
-	0x00,             // SOH
-	0x00,             // STX
-	0x00,             // ETX
-	0x00,             // EOT
-	0x00,             // ENQ
-	0x00,             // ACK  
-	0x00,             // BEL
-	0x2a,			// BS	Backspace
-	0x2b,			// TAB	Tab
-	0x28,			// LF	Enter
-	0x00,             // VT 
-	0x00,             // FF 
-	0x00,             // CR 
-	0x00,             // SO 
-	0x00,             // SI 
-	0x00,             // DEL
-	0x00,             // DC1
-	0x00,             // DC2
-	0x00,             // DC3
-	0x00,             // DC4
-	0x00,             // NAK
-	0x00,             // SYN
-	0x00,             // ETB
-	0x00,             // CAN
-	0x00,             // EM 
-	0x00,             // SUB
-	0x00,             // ESC
-	0x00,             // FS 
-	0x00,             // GS 
-	0x00,             // RS 
-	0x00,             // US 
+/* 000 0x000 */	0x00,         0x00,             // NUL
+/* 001 0x001 */	0x00,         0x00,             // SOH
+/* 002 0x002 */	0x00,         0x00,             // STX
+/* 003 0x003 */	0x00,         0x00,             // ETX
+/* 004 0x004 */	0x00,         0x00,             // EOT
+/* 005 0x005 */	0x00,         0x00,             // ENQ
+/* 006 0x006 */	0x00,         0x00,             // ACK  
+/* 007 0x007 */	0x00,         0x00,             // BEL
+/* 008 0x008 */	0x2a,		  0x2a,			// BS	Backspace
+/* 009 0x009 */	0x2b,		  0x2b,			// TAB	Tab
+/* 010 0x00A */	0x28,		  0x28,			// LF	Enter
+/* 011 0x00B */	0x00,         0x00,             // VT 
+/* 012 0x00C */	0x00,         0x00,             // FF 
+/* 013 0x00D */	0x00,         0x00,             // CR 
+/* 014 0x00E */	0x00,         0x00,             // SO 
+/* 015 0x00F */	0x00,         0x00,             // SI 
+/* 016 0x010 */	0x00,         0x00,             // DEL
+/* 017 0x011 */	0x00,         0x00,             // DC1
+/* 018 0x012 */	0x00,         0x00,             // DC2
+/* 019 0x013 */	0x00,         0x00,             // DC3
+/* 020 0x014 */	0x00,         0x00,             // DC4
+/* 021 0x015 */	0x00,         0x00,             // NAK
+/* 022 0x016 */	0x00,         0x00,             // SYN
+/* 023 0x017 */	0x00,         0x00,             // ETB
+/* 024 0x018 */	0x00,         0x00,             // CAN
+/* 025 0x019 */	0x00,         0x00,             // EM 
+/* 026 0x01A */	0x00,         0x00,             // SUB
+/* 027 0x01B */	0x00,         0x00,             // ESC
+/* 028 0x01C */	0x00,         0x00,             // FS 
+/* 029 0x01D */	0x00,         0x00,             // GS 
+/* 030 0x01E */	0x00,         0x00,             // RS 
+/* 031 0x01F */	0x00,         0x00,             // US 
 
-	0x2c,		   //  ' '
-	0x1e|SHIFT,	   // !
-	0x34|SHIFT,	   // "
-	0x20|SHIFT,    // #
-	0x21|SHIFT,    // $
-	0x22|SHIFT,    // %
-	0x24|SHIFT,    // &
-	0x34,          // '
-	0x26|SHIFT,    // (
-	0x27|SHIFT,    // )
-	0x25|SHIFT,    // *
-	0x2e|SHIFT,    // +
-	0x36,          // ,
-	0x2d,          // -
-	0x37,          // .
-	0x38,          // /
-	0x27,          // 0
-	0x1e,          // 1
-	0x1f,          // 2
-	0x20,          // 3
-	0x21,          // 4
-	0x22,          // 5
-	0x23,          // 6
-	0x24,          // 7
-	0x25,          // 8
-	0x26,          // 9
-	0x33|SHIFT,      // :
-	0x33,          // ;
-	0x36|SHIFT,      // <
-	0x2e,          // =
-	0x37|SHIFT,      // >
-	0x38|SHIFT,      // ?
-	0x1f|SHIFT,      // @
-	0x04|SHIFT,      // A
-	0x05|SHIFT,      // B
-	0x06|SHIFT,      // C
-	0x07|SHIFT,      // D
-	0x08|SHIFT,      // E
-	0x09|SHIFT,      // F
-	0x0a|SHIFT,      // G
-	0x0b|SHIFT,      // H
-	0x0c|SHIFT,      // I
-	0x0d|SHIFT,      // J
-	0x0e|SHIFT,      // K
-	0x0f|SHIFT,      // L
-	0x10|SHIFT,      // M
-	0x11|SHIFT,      // N
-	0x12|SHIFT,      // O
-	0x13|SHIFT,      // P
-	0x14|SHIFT,      // Q
-	0x15|SHIFT,      // R
-	0x16|SHIFT,      // S
-	0x17|SHIFT,      // T
-	0x18|SHIFT,      // U
-	0x19|SHIFT,      // V
-	0x1a|SHIFT,      // W
-	0x1b|SHIFT,      // X
-	0x1c|SHIFT,      // Y
-	0x1d|SHIFT,      // Z
-	0x2f,          // [
-	0x31,          // bslash
-	0x30,          // ]
-	0x23|SHIFT,    // ^
-	0x2d|SHIFT,    // _
-	0x35,          // `
-	0x04,          // a
-	0x05,          // b
-	0x06,          // c
-	0x07,          // d
-	0x08,          // e
-	0x09,          // f
-	0x0a,          // g
-	0x0b,          // h
-	0x0c,          // i
-	0x0d,          // j
-	0x0e,          // k
-	0x0f,          // l
-	0x10,          // m
-	0x11,          // n
-	0x12,          // o
-	0x13,          // p
-	0x14,          // q
-	0x15,          // r
-	0x16,          // s
-	0x17,          // t
-	0x18,          // u
-	0x19,          // v
-	0x1a,          // w
-	0x1b,          // x
-	0x1c,          // y
-	0x1d,          // z
-	0x2f|SHIFT,    // 
-	0x31|SHIFT,    // |
-	0x30|SHIFT,    // }
-	0x35|SHIFT,    // ~
-	0				// DEL
+/* 032 0x020 */	0x2c,		  0x2c,		   //  ' '
+/* 033 0x021 */	0x1e|SHIFT,	  0x1e|SHIFT,	   // !
+/* 034 0x022 */	0x34|SHIFT,	  0x1f|SHIFT,	   // "
+/* 035 0x023 */	0x20|SHIFT,   0x20|GUI,    // #
+/* 036 0x024 */	0x21|SHIFT,   0x21|SHIFT,    // $
+/* 037 0x025 */	0x22|SHIFT,   0x22|SHIFT,    // %
+/* 038 0x026 */	0x24|SHIFT,   0x23|SHIFT,    // &
+/* 039 0x027 */	0x34,         0x34,          // '
+/* 040 0x028 */	0x26|SHIFT,   0x26|SHIFT,    // (
+/* 041 0x029 */	0x27|SHIFT,   0x27|SHIFT,    // )
+/* 042 0x02A */	0x25|SHIFT,   0x25|SHIFT,    // *
+/* 043 0x02B */	0x2e|SHIFT,   0x2e|SHIFT,    // +
+/* 044 0x02C */	0x36,         0x36,          // ,
+/* 045 0x02D */	0x2d,         0x2d,          // -
+/* 046 0x02E */	0x37,         0x37,          // .
+/* 047 0x02F */	0x38,         0x24|SHIFT,          // /
+/* 048 0x030 */	0x27,         0x27,          // 0
+/* 049 0x031 */	0x1e,         0x1e,          // 1
+/* 050 0x032 */	0x1f,         0x1f,          // 2
+/* 051 0x033 */	0x20,         0x20,          // 3
+/* 052 0x034 */	0x21,         0x21,          // 4
+/* 053 0x035 */	0x22,         0x22,          // 5
+/* 054 0x036 */	0x23,         0x23,          // 6
+/* 055 0x037 */	0x24,         0x24,          // 7
+/* 056 0x038 */	0x25,         0x25,          // 8
+/* 057 0x039 */	0x26,         0x26,          // 9
+/* 058 0x03A */	0x33|SHIFT,   0x33|SHIFT,    // :
+/* 059 0x03B */	0x33,         0x33,          // ;
+/* 060 0x03C */	0x36|SHIFT,   0x36|SHIFT,    // <
+/* 061 0x03D */	0x2e,         0x2e,          // =
+/* 062 0x03E */	0x37|SHIFT,   0x37|SHIFT,    // >
+/* 063 0x03F */	0x38|SHIFT,   0x38|SHIFT,    // ?
+/* 064 0x040 */	0x1f|SHIFT,   0x1f|GUI,      // @
+/* 065 0x041 */	0x04|SHIFT,   0x04|SHIFT,      // A
+/* 066 0x042 */	0x05|SHIFT,   0x05|SHIFT,      // B
+/* 067 0x043 */	0x06|SHIFT,   0x06|SHIFT,      // C
+/* 068 0x044 */	0x07|SHIFT,   0x07|SHIFT,      // D
+/* 069 0x045 */	0x08|SHIFT,   0x08|SHIFT,      // E
+/* 070 0x046 */	0x09|SHIFT,   0x09|SHIFT,      // F
+/* 071 0x047 */	0x0a|SHIFT,   0x0a|SHIFT,      // G
+/* 072 0x048 */	0x0b|SHIFT,   0x0b|SHIFT,      // H
+/* 073 0x049 */	0x0c|SHIFT,   0x0c|SHIFT,      // I
+/* 074 0x04A */	0x0d|SHIFT,   0x0d|SHIFT,      // J
+/* 075 0x04B */	0x0e|SHIFT,   0x0e|SHIFT,      // K
+/* 076 0x04C */	0x0f|SHIFT,   0x0f|SHIFT,      // L
+/* 077 0x04D */	0x10|SHIFT,   0x10|SHIFT,      // M
+/* 078 0x04E */	0x11|SHIFT,   0x11|SHIFT,      // N
+/* 079 0x04F */	0x12|SHIFT,   0x12|SHIFT,      // O
+/* 080 0x050 */	0x13|SHIFT,   0x13|SHIFT,      // P
+/* 081 0x051 */	0x14|SHIFT,   0x14|SHIFT,      // Q
+/* 082 0x052 */	0x15|SHIFT,   0x15|SHIFT,      // R
+/* 083 0x053 */	0x16|SHIFT,   0x16|SHIFT,      // S
+/* 084 0x054 */	0x17|SHIFT,   0x17|SHIFT,      // T
+/* 085 0x055 */	0x18|SHIFT,   0x18|SHIFT,      // U
+/* 086 0x056 */	0x19|SHIFT,   0x19|SHIFT,      // V
+/* 087 0x057 */	0x1a|SHIFT,   0x1a|SHIFT,      // W
+/* 088 0x058 */	0x1b|SHIFT,   0x1b|SHIFT,      // X
+/* 089 0x059 */	0x1c|SHIFT,   0x1c|SHIFT,      // Y
+/* 090 0x05A */	0x1d|SHIFT,   0x1d|SHIFT,      // Z
+/* 091 0x05B */	0x2f,         0x2f,          // [
+/* 092 0x05C */	0x31,         0x31,          // bslash
+/* 093 0x05D */	0x30,         0x30,          // ]
+/* 094 0x05E */	0x23|SHIFT,   0x23|SHIFT,    // ^
+/* 095 0x05F */	0x2d|SHIFT,   0x2d|SHIFT,    // _
+/* 096 0x060 */	0x35,         0x35,          // `
+/* 097 0x061 */	0x04,         0x04,          // a
+/* 098 0x062 */	0x05,         0x05,          // b
+/* 099 0x063 */	0x06,         0x06,          // c
+/* 100 0x064 */	0x07,         0x07,          // d
+/* 101 0x065 */	0x08,         0x08,          // e
+/* 102 0x066 */	0x09,         0x09,          // f
+/* 103 0x067 */	0x0a,         0x0a,          // g
+/* 104 0x068 */	0x0b,         0x0b,          // h
+/* 105 0x069 */	0x0c,         0x0c,          // i
+/* 106 0x06A */	0x0d,         0x0d,          // j
+/* 107 0x06B */	0x0e,         0x0e,          // k
+/* 108 0x06C */	0x0f,         0x0f,          // l
+/* 109 0x06D */	0x10,         0x10,          // m
+/* 110 0x06E */	0x11,         0x11,          // n
+/* 111 0x06F */	0x12,         0x12,          // o
+/* 112 0x070 */	0x13,         0x13,          // p
+/* 113 0x071 */	0x14,         0x14,          // q
+/* 114 0x072 */	0x15,         0x15,          // r
+/* 115 0x073 */	0x16,         0x16,          // s
+/* 116 0x074 */	0x17,         0x17,          // t
+/* 117 0x075 */	0x18,         0x18,          // u
+/* 118 0x076 */	0x19,         0x19,          // v
+/* 119 0x077 */	0x1a,         0x1a,          // w
+/* 120 0x078 */	0x1b,         0x1b,          // x
+/* 121 0x079 */	0x1c,         0x1c,          // y
+/* 122 0x07A */	0x1d,         0x1d,          // z
+/* 123 0x07B */	0x2f|SHIFT,   0x2f|SHIFT,    // 
+/* 124 0x07C */	0x31|SHIFT,   0x31|SHIFT,    // |
+/* 125 0x07D */	0x30|SHIFT,   0x30|SHIFT,    // }
+/* 126 0x07E */	0x35|SHIFT,   0x35|SHIFT,    // ~
+/* 127 0x07F */	0,			  0				// DEL
 };
 
 uint8_t USBPutChar(uint8_t c);
@@ -423,6 +429,7 @@ uint8_t USBPutChar(uint8_t c);
 // call release(), releaseAll(), or otherwise clear the report and resend.
 size_t Keyboard_::press(uint8_t k) 
 {
+	Serial.println(k,HEX);
 	uint8_t i;
 	if (k >= 136) {			// it's a non-printing key (not a modifier)
 		k = k - 136;
@@ -430,7 +437,7 @@ size_t Keyboard_::press(uint8_t k)
 		_keyReport.modifiers |= (1<<(k-128));
 		k = 0;
 	} else {				// it's a printing key
-		k = pgm_read_byte(_asciimap + k);
+		k = pgm_read_byte(_asciimap + k*2+1);
 		if (!k) {
 			setWriteError();
 			return 0;
@@ -474,7 +481,7 @@ size_t Keyboard_::release(uint8_t k)
 		_keyReport.modifiers &= ~(1<<(k-128));
 		k = 0;
 	} else {				// it's a printing key
-		k = pgm_read_byte(_asciimap + k);
+		k = pgm_read_byte(_asciimap + k*2+1);
 		if (!k) {
 			return 0;
 		}
