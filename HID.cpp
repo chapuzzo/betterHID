@@ -281,12 +281,10 @@ void Keyboard_::sendReport(KeyReport* keys)
 extern
 const uint8_t _asciimap[256] PROGMEM;
 
-//#define SHIFT 0x80
-
 //#define CTRL		0x80
 #define SHIFT		0x80
 //#define ALT  		0x82
-#define GUI			0x83
+#define ALTGR		0x40
 
 const uint8_t _asciimap[256] =
 {
@@ -323,10 +321,10 @@ const uint8_t _asciimap[256] =
 /* 030 0x01E */	0x00,         0x00,             // RS 
 /* 031 0x01F */	0x00,         0x00,             // US 
 
-/* 032 0x020 */	0x2c,		  0x2c,		   //  ' '
-/* 033 0x021 */	0x1e|SHIFT,	  0x1e|SHIFT,	   // !
-/* 034 0x022 */	0x34|SHIFT,	  0x1f|SHIFT,	   // "
-/* 035 0x023 */	0x20|SHIFT,   0x20|GUI,    // #
+/* 032 0x020 */	0x2c,		  0x2c,		     //  ' '
+/* 033 0x021 */	0x1e|SHIFT,	  0x1e|SHIFT,	 // !
+/* 034 0x022 */	0x34|SHIFT,	  0x1f|SHIFT,	 // "
+/* 035 0x023 */	0x20|SHIFT,   0x20|ALTGR,    // #
 /* 036 0x024 */	0x21|SHIFT,   0x21|SHIFT,    // $
 /* 037 0x025 */	0x22|SHIFT,   0x22|SHIFT,    // %
 /* 038 0x026 */	0x24|SHIFT,   0x23|SHIFT,    // &
@@ -338,7 +336,7 @@ const uint8_t _asciimap[256] =
 /* 044 0x02C */	0x36,         0x36,          // ,
 /* 045 0x02D */	0x2d,         0x2d,          // -
 /* 046 0x02E */	0x37,         0x37,          // .
-/* 047 0x02F */	0x38,         0x24|SHIFT,          // /
+/* 047 0x02F */	0x38,         0x24|SHIFT,    // /
 /* 048 0x030 */	0x27,         0x27,          // 0
 /* 049 0x031 */	0x1e,         0x1e,          // 1
 /* 050 0x032 */	0x1f,         0x1f,          // 2
@@ -349,13 +347,13 @@ const uint8_t _asciimap[256] =
 /* 055 0x037 */	0x24,         0x24,          // 7
 /* 056 0x038 */	0x25,         0x25,          // 8
 /* 057 0x039 */	0x26,         0x26,          // 9
-/* 058 0x03A */	0x33|SHIFT,   0x33|SHIFT,    // :
-/* 059 0x03B */	0x33,         0x33,          // ;
-/* 060 0x03C */	0x36|SHIFT,   0x36|SHIFT,    // <
-/* 061 0x03D */	0x2e,         0x2e,          // =
-/* 062 0x03E */	0x37|SHIFT,   0x37|SHIFT,    // >
-/* 063 0x03F */	0x38|SHIFT,   0x38|SHIFT,    // ?
-/* 064 0x040 */	0x1f|SHIFT,   0x1f|GUI,      // @
+/* 058 0x03A */	0x33|SHIFT,   0x37|SHIFT,      // :
+/* 059 0x03B */	0x33,         0x36|SHIFT,      // ;
+/* 060 0x03C */	0x36|SHIFT,   0x5E,            // <
+/* 061 0x03D */	0x2e,         0x27|SHIFT,      // =
+/* 062 0x03E */	0x37|SHIFT,   0x5E|SHIFT,      // >
+/* 063 0x03F */	0x38|SHIFT,   0x26|SHIFT,      // ?
+/* 064 0x040 */	0x1f|SHIFT,   0x1f|ALTGR,      // @
 /* 065 0x041 */	0x04|SHIFT,   0x04|SHIFT,      // A
 /* 066 0x042 */	0x05|SHIFT,   0x05|SHIFT,      // B
 /* 067 0x043 */	0x06|SHIFT,   0x06|SHIFT,      // C
@@ -415,10 +413,10 @@ const uint8_t _asciimap[256] =
 /* 121 0x079 */	0x1c,         0x1c,          // y
 /* 122 0x07A */	0x1d,         0x1d,          // z
 /* 123 0x07B */	0x2f|SHIFT,   0x2f|SHIFT,    // 
-/* 124 0x07C */	0x31|SHIFT,   0x31|SHIFT,    // |
-/* 125 0x07D */	0x30|SHIFT,   0x30|SHIFT,    // }
-/* 126 0x07E */	0x35|SHIFT,   0x35|SHIFT,    // ~
-/* 127 0x07F */	0,			  0				// DEL
+/* 124 0x07C */	0x31|SHIFT,   0x1e|ALTGR,    // |
+/* 125 0x07D */	0x30|SHIFT,   0x31|ALTGR,    // }
+/* 126 0x07E */	0x35|SHIFT,   0x21|ALTGR,    // ~
+/* 127 0x07F */	0,			  0				 // DEL
 };
 
 uint8_t USBPutChar(uint8_t c);
@@ -429,7 +427,6 @@ uint8_t USBPutChar(uint8_t c);
 // call release(), releaseAll(), or otherwise clear the report and resend.
 size_t Keyboard_::press(uint8_t k) 
 {
-	Serial.println(k,HEX);
 	uint8_t i;
 	if (k >= 136) {			// it's a non-printing key (not a modifier)
 		k = k - 136;
@@ -442,10 +439,15 @@ size_t Keyboard_::press(uint8_t k)
 			setWriteError();
 			return 0;
 		}
-		if (k & 0x80) {						// it's a capital letter or other character reached with shift
-			_keyReport.modifiers |= 0x02;	// the left shift modifier
+		if (k & SHIFT) {						// it's a capital letter or other character reached with shift
+			_keyReport.modifiers |= KEY_MODIFIER_LEFT_SHIFT;	// the left shift modifier
 			k &= 0x7F;
 		}
+		if (k & ALTGR) {
+			_keyReport.modifiers |= KEY_MODIFIER_RIGHT_ALT;
+			k &= 0x3F;
+		}
+
 	}
 	
 	// Add k to the key report only if it's not already present
@@ -486,8 +488,12 @@ size_t Keyboard_::release(uint8_t k)
 			return 0;
 		}
 		if (k & 0x80) {							// it's a capital letter or other character reached with shift
-			_keyReport.modifiers &= ~(0x02);	// the left shift modifier
+			_keyReport.modifiers &= ~KEY_MODIFIER_LEFT_SHIFT;	// the left shift modifier
 			k &= 0x7F;
+		}
+		if (k & 0x40) {						// it's a capital letter or other character reached with shift
+			_keyReport.modifiers &= ~KEY_MODIFIER_RIGHT_ALT;	// the left shift modifier
+			k &= 0x3F;
 		}
 	}
 	
