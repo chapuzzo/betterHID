@@ -267,10 +267,21 @@ Keyboard_::Keyboard_(void)
 
 void Keyboard_::begin(void) 
 {
+	setKmap(DEFAULT_KMAP);
+}
+
+void Keyboard_::begin(uint8_t kmap) 
+{
+	setKmap(kmap);
 }
 
 void Keyboard_::end(void) 
 {
+}
+
+void Keyboard_::setKmap(uint8_t lang)
+{
+	_kmap = lang;
 }
 
 void Keyboard_::sendReport(KeyReport* keys)
@@ -279,14 +290,13 @@ void Keyboard_::sendReport(KeyReport* keys)
 }
 
 extern
-const uint8_t _asciimap[256] PROGMEM;
+const uint16_t _asciimap[256] PROGMEM;
 
-//#define CTRL		0x80
-#define SHIFT		0x80
-//#define ALT  		0x82
-#define ALTGR		0x40
+#define SHIFT		0x0100
+#define ALTGR		0x0200
+#define DK			0x0400
 
-const uint8_t _asciimap[256] =
+const uint16_t _asciimap[256] =
 {
 /* 000 0x000 */	0x00,         0x00,             // NUL
 /* 001 0x001 */	0x00,         0x00,             // SOH
@@ -321,20 +331,20 @@ const uint8_t _asciimap[256] =
 /* 030 0x01E */	0x00,         0x00,             // RS 
 /* 031 0x01F */	0x00,         0x00,             // US 
 
-/* 032 0x020 */	0x2c,		  0x2c,		     //  ' '
+/* 032 0x020 */	0x2c,		  0x2c,		     // ' '
 /* 033 0x021 */	0x1e|SHIFT,	  0x1e|SHIFT,	 // !
 /* 034 0x022 */	0x34|SHIFT,	  0x1f|SHIFT,	 // "
 /* 035 0x023 */	0x20|SHIFT,   0x20|ALTGR,    // #
 /* 036 0x024 */	0x21|SHIFT,   0x21|SHIFT,    // $
 /* 037 0x025 */	0x22|SHIFT,   0x22|SHIFT,    // %
 /* 038 0x026 */	0x24|SHIFT,   0x23|SHIFT,    // &
-/* 039 0x027 */	0x34,         0x34,          // '
-/* 040 0x028 */	0x26|SHIFT,   0x26|SHIFT,    // (
-/* 041 0x029 */	0x27|SHIFT,   0x27|SHIFT,    // )
-/* 042 0x02A */	0x25|SHIFT,   0x25|SHIFT,    // *
-/* 043 0x02B */	0x2e|SHIFT,   0x2e|SHIFT,    // +
+/* 039 0x027 */	0x34,         0x2d,          // '
+/* 040 0x028 */	0x26|SHIFT,   0x25|SHIFT,    // (
+/* 041 0x029 */	0x27|SHIFT,   0x26|SHIFT,    // )
+/* 042 0x02A */	0x25|SHIFT,   0x30|SHIFT,    // *
+/* 043 0x02B */	0x2e|SHIFT,   0x30,          // +
 /* 044 0x02C */	0x36,         0x36,          // ,
-/* 045 0x02D */	0x2d,         0x2d,          // -
+/* 045 0x02D */	0x2d,         0x38,          // - 	//33 = ñ
 /* 046 0x02E */	0x37,         0x37,          // .
 /* 047 0x02F */	0x38,         0x24|SHIFT,    // /
 /* 048 0x030 */	0x27,         0x27,          // 0
@@ -349,10 +359,10 @@ const uint8_t _asciimap[256] =
 /* 057 0x039 */	0x26,         0x26,          // 9
 /* 058 0x03A */	0x33|SHIFT,   0x37|SHIFT,      // :
 /* 059 0x03B */	0x33,         0x36|SHIFT,      // ;
-/* 060 0x03C */	0x36|SHIFT,   0x5E,            // <
+/* 060 0x03C */	0x36|SHIFT,   0x64,            // <
 /* 061 0x03D */	0x2e,         0x27|SHIFT,      // =
-/* 062 0x03E */	0x37|SHIFT,   0x5E|SHIFT,      // >
-/* 063 0x03F */	0x38|SHIFT,   0x26|SHIFT,      // ?
+/* 062 0x03E */	0x37|SHIFT,   0x64|SHIFT,      // >
+/* 063 0x03F */	0x38|SHIFT,   0x2d|SHIFT,      // ?
 /* 064 0x040 */	0x1f|SHIFT,   0x1f|ALTGR,      // @
 /* 065 0x041 */	0x04|SHIFT,   0x04|SHIFT,      // A
 /* 066 0x042 */	0x05|SHIFT,   0x05|SHIFT,      // B
@@ -380,12 +390,12 @@ const uint8_t _asciimap[256] =
 /* 088 0x058 */	0x1b|SHIFT,   0x1b|SHIFT,      // X
 /* 089 0x059 */	0x1c|SHIFT,   0x1c|SHIFT,      // Y
 /* 090 0x05A */	0x1d|SHIFT,   0x1d|SHIFT,      // Z
-/* 091 0x05B */	0x2f,         0x2f,          // [
-/* 092 0x05C */	0x31,         0x31,          // bslash
-/* 093 0x05D */	0x30,         0x30,          // ]
-/* 094 0x05E */	0x23|SHIFT,   0x23|SHIFT,    // ^
-/* 095 0x05F */	0x2d|SHIFT,   0x2d|SHIFT,    // _
-/* 096 0x060 */	0x35,         0x35,          // `
+/* 091 0x05B */	0x2f,         0x2f|ALTGR,    // [
+/* 092 0x05C */	0x31,         0x35|ALTGR,    // bslash
+/* 093 0x05D */	0x30,         0x30|ALTGR,    // ]
+/* 094 0x05E */	0x23|SHIFT,   0x2f|SHIFT|DK, // ^
+/* 095 0x05F */	0x2d|SHIFT,   0x38|SHIFT,    // _
+/* 096 0x060 */	0x35,         0x2f|DK,       // `
 /* 097 0x061 */	0x04,         0x04,          // a
 /* 098 0x062 */	0x05,         0x05,          // b
 /* 099 0x063 */	0x06,         0x06,          // c
@@ -412,7 +422,7 @@ const uint8_t _asciimap[256] =
 /* 120 0x078 */	0x1b,         0x1b,          // x
 /* 121 0x079 */	0x1c,         0x1c,          // y
 /* 122 0x07A */	0x1d,         0x1d,          // z
-/* 123 0x07B */	0x2f|SHIFT,   0x2f|SHIFT,    // 
+/* 123 0x07B */	0x2f|SHIFT,   0x34|ALTGR,    // { ****
 /* 124 0x07C */	0x31|SHIFT,   0x1e|ALTGR,    // |
 /* 125 0x07D */	0x30|SHIFT,   0x31|ALTGR,    // }
 /* 126 0x07E */	0x35|SHIFT,   0x21|ALTGR,    // ~
@@ -425,34 +435,50 @@ uint8_t USBPutChar(uint8_t c);
 // to the persistent key report and sends the report.  Because of the way 
 // USB HID works, the host acts like the key remains pressed until we 
 // call release(), releaseAll(), or otherwise clear the report and resend.
-size_t Keyboard_::press(uint8_t k) 
+size_t Keyboard_::press(uint8_t in) 
 {
-	uint8_t i;
-	if (k >= 136) {			// it's a non-printing key (not a modifier)
-		k = k - 136;
-	} else if (k >= 128) {	// it's a modifier key
-		_keyReport.modifiers |= (1<<(k-128));
+	uint16_t k;
+	uint8_t wasDeadKey = 0;
+	
+	if (in >= 136) {			// it's a non-printing key (not a modifier)
+		k = in - 136;
+	} else if (in >= 128) {	// it's a modifier key
+		_keyReport.modifiers |= (1<<(in-128));
 		k = 0;
 	} else {				// it's a printing key
-		k = pgm_read_byte(_asciimap + k*2+1);
+		k = pgm_read_word(_asciimap + in * 2 + _kmap);
 		if (!k) {
 			setWriteError();
 			return 0;
 		}
-		if (k & SHIFT) {						// it's a capital letter or other character reached with shift
-			_keyReport.modifiers |= KEY_MODIFIER_LEFT_SHIFT;	// the left shift modifier
-			k &= 0x7F;
+		if (k & SHIFT) {
+			_keyReport.modifiers |= KEY_MODIFIER_LEFT_SHIFT;
+			k &= ~SHIFT;
 		}
 		if (k & ALTGR) {
 			_keyReport.modifiers |= KEY_MODIFIER_RIGHT_ALT;
-			k &= 0x3F;
+			k &= ~ALTGR;
+		}		
+		if (k & DK) {
+			k &= ~DK;
+			wasDeadKey = 1;
 		}
-
 	}
-	
+	if (!addToReport(k))
+		return 0;
+	sendReport(&_keyReport);
+	if (wasDeadKey){
+		write(' ');
+	}
+	return 1;
+}
+
+uint8_t Keyboard_::addToReport(uint8_t k)
+{
+	uint8_t i;
 	// Add k to the key report only if it's not already present
 	// and if there is an empty slot.
-	if (_keyReport.keys[0] != k && _keyReport.keys[1] != k && 
+    if (_keyReport.keys[0] != k && _keyReport.keys[1] != k && 
 		_keyReport.keys[2] != k && _keyReport.keys[3] != k &&
 		_keyReport.keys[4] != k && _keyReport.keys[5] != k) {
 		
@@ -467,45 +493,52 @@ size_t Keyboard_::press(uint8_t k)
 			return 0;
 		}	
 	}
-	sendReport(&_keyReport);
 	return 1;
 }
+
 
 // release() takes the specified key out of the persistent key report and
 // sends the report.  This tells the OS the key is no longer pressed and that
 // it shouldn't be repeated any more.
-size_t Keyboard_::release(uint8_t k) 
+size_t Keyboard_::release(uint8_t in)
 {
-	uint8_t i;
-	if (k >= 136) {			// it's a non-printing key (not a modifier)
-		k = k - 136;
-	} else if (k >= 128) {	// it's a modifier key
-		_keyReport.modifiers &= ~(1<<(k-128));
+	uint16_t k;
+	if (in >= 136) {			// it's a non-printing key (not a modifier)
+		k = in - 136;
+	} else if (in >= 128) {	// it's a modifier key
+		_keyReport.modifiers &= ~(1<<(in-128));
 		k = 0;
 	} else {				// it's a printing key
-		k = pgm_read_byte(_asciimap + k*2+1);
+		k = pgm_read_word(_asciimap + in * 2 + _kmap);
 		if (!k) {
 			return 0;
 		}
-		if (k & 0x80) {							// it's a capital letter or other character reached with shift
-			_keyReport.modifiers &= ~KEY_MODIFIER_LEFT_SHIFT;	// the left shift modifier
-			k &= 0x7F;
+		if (k & SHIFT) {
+			_keyReport.modifiers &= ~KEY_MODIFIER_LEFT_SHIFT;
+			k &= ~SHIFT;
 		}
-		if (k & 0x40) {						// it's a capital letter or other character reached with shift
-			_keyReport.modifiers &= ~KEY_MODIFIER_RIGHT_ALT;	// the left shift modifier
-			k &= 0x3F;
+		if (k & ALTGR) {
+			_keyReport.modifiers &= ~KEY_MODIFIER_RIGHT_ALT;
+			k &= ~ALTGR;
+		}		
+		if (k & DK) {
+			k &= ~DK;
 		}
 	}
-	
+	removeFromReport(k);
+	sendReport(&_keyReport);
+	return 1;
+}
+
+uint8_t Keyboard_::removeFromReport(uint8_t k){
+
 	// Test the key report to see if k is present.  Clear it if it exists.
 	// Check all positions in case the key is present more than once (which it shouldn't be)
-	for (i=0; i<6; i++) {
+	for (int i=0; i<6; i++) {
 		if (0 != k && _keyReport.keys[i] == k) {
 			_keyReport.keys[i] = 0x00;
 		}
 	}
-
-	sendReport(&_keyReport);
 	return 1;
 }
 
@@ -524,7 +557,8 @@ void Keyboard_::releaseAll(void)
 size_t Keyboard_::write(uint8_t c)
 {	
 	uint8_t p = press(c);		// Keydown
-	uint8_t r = release(c);		// Keyup
+	//uint8_t r = 
+	release(c);		// Keyup
 	return (p);					// just return the result of press() since release() almost always returns 1
 }
 

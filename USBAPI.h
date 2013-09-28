@@ -111,6 +111,21 @@ extern Mouse_ Mouse;
 #define KEY_F11				0xCC
 #define KEY_F12				0xCD
 
+
+#define KEY_MODIFIER_LEFT_CTRL		0x01
+#define KEY_MODIFIER_LEFT_SHIFT		0x02
+#define KEY_MODIFIER_LEFT_ALT		0x04
+#define KEY_MODIFIER_LEFT_GUI		0x08
+#define KEY_MODIFIER_RIGHT_CTRL		0x010
+#define KEY_MODIFIER_RIGHT_SHIFT	0x020
+#define KEY_MODIFIER_RIGHT_ALT		0x040
+#define KEY_MODIFIER_RIGHT_GUI		0x080
+
+/*kmap options*/
+#define EN 0x00
+#define ES 0x01
+#define DEFAULT_KMAP ES
+
 //	Low level key report: up to 6 keys and shift, ctrl etc at once
 typedef struct
 {
@@ -123,15 +138,20 @@ class Keyboard_ : public Print
 {
 private:
 	KeyReport _keyReport;
+	uint8_t _kmap;
 	void sendReport(KeyReport* keys);
+	uint8_t addToReport(uint8_t k);
+	uint8_t removeFromReport(uint8_t k);
 public:
 	Keyboard_(void);
 	void begin(void);
+	void begin(uint8_t kmap);
 	void end(void);
 	virtual size_t write(uint8_t k);
 	virtual size_t press(uint8_t k);
 	virtual size_t release(uint8_t k);
 	virtual void releaseAll(void);
+	virtual void setKmap(uint8_t kmap);
 };
 extern Keyboard_ Keyboard;
 
